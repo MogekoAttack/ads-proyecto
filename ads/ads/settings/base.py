@@ -48,7 +48,13 @@ INSTALLED_APPS = [
     #Proyecto
     "catalogo",
     "e_gobierno",
+    "e_norte",
+    "e_sur",
+    "e_ia",
+    #Edificios
     "wagtail.contrib.modeladmin",
+    "wagtail.api.v2",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [

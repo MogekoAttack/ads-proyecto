@@ -66,6 +66,14 @@ class Material(ClusterableModel):
         blank=False,
     )
 
+    api_fields = [
+        APIField('nombre'),
+        APIField('tipo'),
+        APIField('descripcion'),
+        APIField('cantidad'),
+        APIField('precio_unitario'),
+    ]
+
     def clean(self):
         if self.precio_unitario < 0:
             raise ValidationError("El precio unitario no puede ser negativo")
@@ -78,6 +86,32 @@ class Material(ClusterableModel):
     class Meta:
         verbose_name = "Material"
         verbose_name_plural = "Listado de materiales"
+
+class MaterialAPIViewSet(BaseAPIViewSet):
+    body_fields = BaseAPIViewSet.body_fields + [
+        "nombre",
+        "tipo",
+        "descripcion",
+        "cantidad",
+        "precio_unitario",
+    ]
+
+    listing_default_fields = BaseAPIViewSet.listing_default_fields + [
+        "nombre",
+        "tipo",
+        "descripcion",
+        "cantidad",
+        "precio_unitario",
+    ]
+
+    filter_backends = [
+        FieldsFilter,
+        OrderingFilter,
+    ]
+
+    name = "material"
+    model = Material
+
         
 #################################################################################
 # Elemento                                                                      #
