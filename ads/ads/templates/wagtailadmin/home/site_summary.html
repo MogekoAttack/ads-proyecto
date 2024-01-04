@@ -1,0 +1,20 @@
+{% load i18n wagtailadmin_tags modeladmin_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static "css/ads.css" %}"/>
+    <script src="{% static "js/ads.js" %}"></script>
+</head>
+<body>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <div class="container">
+        <button>Cambiar propiedades del edificio</button>
+        <button>Generar reporte del edicio</button>
+        <div id="chart_avance"></div>
+        <div id="chart_presupuesto"></div>
+        <div id="chart_materiales"></div>
+        <div id="chart_jerarquia_gobierno"></div>
+    </div>
+</body>
+</html>
