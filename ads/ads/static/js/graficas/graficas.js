@@ -1,32 +1,25 @@
 document.addEventListener("DOMContentLoaded", (event) => {
-    
+    principal();
 })
 
 async function principal(){
-    await obtenerDatos();
+    const gobierno = await obtenerDatos("egobierno_general");
+    console.log('gobierno: ', gobierno);
 
-    GraficoAvance();
+    const ia = await obtenerDatos("eia_general");
+    console.log('ia: ', ia);
+
+    const norte = await obtenerDatos("enorte_general");
+    console.log('norte: ', norte);
+
+    const sur = await obtenerDatos("esur_general");
+    console.log('sur: ', sur);
+
+
+    GraficoAvance(gobierno, norte, sur, ia);
     GraficoPresupuesto();
     GraficoMateriales();
     GraficoTrabajadores();
-}
-
-function GraficoAvance() {
-    google.charts.load("current", { packages: ["corechart"] });
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Edificio', 'Porcentaje de avance', 'No completado'],
-            ['Edificio Gobierno', 10, 90],
-        ]);
-
-        var options = {
-            isStacked: true,
-            legend: { position: 'none' },
-        };
-        var chart = new google.visualization.BarChart(document.getElementById("chart_avance"));
-        chart.draw(data, options);
-    }
 }
 
 async function obtenerDatos(parametro) {
@@ -36,10 +29,37 @@ async function obtenerDatos(parametro) {
         throw new Error(`HTTP error! status: ${respuesta.status}`);
     }
     const datos = await respuesta.json();
-    console.log('datos: ', datos);
     
-    return datos;
+    return datos['items']['0'];
 }
+
+function GraficoAvance(gobierno, norte, sur, ia) {
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Gobierno');
+        data.addColumn('number', 'Completado');
+        data.addColumn('number', 'Incompleto');
+
+        data.addRows([
+            ['Gobierno', gobierno['progreso'], 100-gobierno['progreso']],
+            ['Norte', norte['progreso'], 100-norte['progreso']],
+            ['Sur', sur['progreso'], 100-sur['progreso']],
+            ['IA', ia['progreso'], 100-ia['progreso']],
+        ]);
+
+        var options = {
+            isStacked: true,
+            // legend: { position: 'none' },
+            title: 'Progreso'
+        };
+        var chart = new google.visualization.BarChart(document.getElementById("chart_avance"));
+        chart.draw(data, options);
+    }
+}
+
+
 
 function GraficoPresupuesto() {
     google.charts.load('current', { 'packages': ['corechart'] });
