@@ -96,3 +96,25 @@ class Reporte(ClusterableModel):
         verbose_name = "Reporte"
         verbose_name_plural = "Listado de reportes"
     
+class ReporteAPIViewSet(BaseAPIViewSet):
+    body_fields = BaseAPIViewSet.body_fields + [
+        "nombre",
+        "fecha_actual",
+        "archivo",
+        "actualizador",
+    ]
+
+    listing_default_fields = BaseAPIViewSet.listing_default_fields + [
+        "nombre",
+        "fecha_actual",
+        "archivo",
+        "actualizador",
+    ]
+
+    filter_backends = [
+        FieldsFilter,
+        OrderingFilter,
+    ]
+
+    name = "reporte"
+    model = Reporte
