@@ -17,7 +17,7 @@ async function principal(){
 
 
     GraficoAvance(gobierno, norte, sur, ia);
-    GraficoPresupuesto();
+    GraficoPresupuesto(gobierno, norte, sur, ia);
     GraficoMateriales();
     GraficoTrabajadores();
 }
@@ -38,7 +38,7 @@ function GraficoAvance(gobierno, norte, sur, ia) {
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Gobierno');
+        data.addColumn('string', 'Edificio');
         data.addColumn('number', 'Completado');
         data.addColumn('number', 'Incompleto');
 
@@ -61,26 +61,29 @@ function GraficoAvance(gobierno, norte, sur, ia) {
 
 
 
-function GraficoPresupuesto() {
-    google.charts.load('current', { 'packages': ['corechart'] });
+function GraficoPresupuesto(gobierno, norte, sur, ia) {
+    google.charts.load("current", { packages: ["corechart"] });
     google.charts.setOnLoadCallback(drawChart);
-
     function drawChart() {
-
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Concepto');
-        data.addColumn('number', 'Cantidad');
+        data.addColumn('string', 'Edificio');
+        data.addColumn('number', 'Usado');
+        data.addColumn('number', 'Sin usar');
+
         data.addRows([
-            ['Mano de obra', 33],
-            ['Material', 50],
+            ['Gobierno', gobierno['progreso'], 100-gobierno['progreso']],
+            ['Norte', norte['progreso'], 100-norte['progreso']],
+            ['Sur', sur['progreso'], 100-sur['progreso']],
+            ['IA', ia['progreso'], 100-ia['progreso']],
         ]);
 
         var options = {
-            title: 'Presupuesto',
-            sliceVisibilityThreshold: .2
+            isStacked: true,
+            // legend: { position: 'none' },
+            title: 'Presupuesto'
         };
 
-        var chart = new google.visualization.PieChart(document.getElementById('chart_presupuesto'));
+        var chart = new google.visualization.BarChart(document.getElementById('chart_presupuesto'));
         chart.draw(data, options);
     }
 }

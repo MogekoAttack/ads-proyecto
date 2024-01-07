@@ -10,17 +10,19 @@ from wagtail.api import APIField
 from wagtail.api.v2.filters import OrderingFilter, FieldsFilter
 from modelcluster.models import ClusterableModel
 
-from catalogo.models import Material
 from modelcluster.models import ClusterableModel
 
 #################################################################################
 # Elemento                                                                      #
 #################################################################################
 class General(models.Model):
+    class Meta:
+        verbose_name = "General gobierno"
     avance = models.IntegerField(
         default=0,
         verbose_name="Avances",
         blank=False,
+        editable=False,
     )
 
     progreso = models.IntegerField(
@@ -36,6 +38,9 @@ class General(models.Model):
     presupuesto = models.IntegerField(
         verbose_name="Presupuesto",
         blank=False,
+        validators=[
+            MinValueValidator(0, message="El valor debe ser igual o mayor a 0."),
+        ],
     )
 
     api_fields = [
@@ -68,6 +73,34 @@ class GeneralAPIViewSet(BaseAPIViewSet):
 #################################################################################
 # Elemento                                                                      #
 #################################################################################
+class Trabajador(models.Model):
+    nombre = models.ForeignKey(
+        "catalogo.Trabajador",
+        verbose_name = "Seleccione uno de la lista",
+        on_delete = models.CASCADE,
+        related_name='trabajadores_gobierno',
+    )
+    class Meta:
+        verbose_name = "Trabajador del edificio de gobierno"
+        verbose_name_plural = "Trabajadores del edificio de gobierno"
+
+#################################################################################
+# Elemento                                                                      #
+#################################################################################        
+class Material(models.Model):
+    nombre = models.ForeignKey(
+        "catalogo.Material",
+        verbose_name = "Seleccione uno de la lista",
+        on_delete = models.CASCADE,
+        related_name='materiales_gobierno',
+    )
+    class Meta:
+        verbose_name = "Material del edificio de gobierno"
+        verbose_name_plural = "Materiales del edificio de gobierno"
+
+#################################################################################
+# Elemento                                                                      #
+#################################################################################
 class Reporte(ClusterableModel):
     nombre = models.CharField(
         verbose_name="Nombre de la actualización",
@@ -87,13 +120,14 @@ class Reporte(ClusterableModel):
     actualizador = models.CharField(
         verbose_name="Nombre de quien hace este reporte",
         max_length=64,
+        blank=False,
     )
     
     def __str__(self):
         return self.nombre
 
     class Meta:
-        verbose_name = "Reporte"
+        verbose_name = "Reporte gobierno"
         verbose_name_plural = "Listado de reportes"
     
 class ReporteAPIViewSet(BaseAPIViewSet):

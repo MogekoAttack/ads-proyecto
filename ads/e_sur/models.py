@@ -13,10 +13,15 @@ from modelcluster.models import ClusterableModel
 from catalogo.models import Material
 from modelcluster.models import ClusterableModel
 
+from catalogo.models import Trabajador
+from catalogo.models import Material
+
 #################################################################################
 # Elemento                                                                      #
 #################################################################################
 class General(models.Model):
+    class Meta:
+        verbose_name = "General sur"
     avance = models.IntegerField(
         default=0,
         verbose_name="Avances",
@@ -36,6 +41,9 @@ class General(models.Model):
     presupuesto = models.IntegerField(
         verbose_name="Presupuesto",
         blank=False,
+        validators=[
+            MinValueValidator(0, message="El valor debe ser igual o mayor a 0."),
+        ],
     )
 
     api_fields = [
@@ -68,7 +76,37 @@ class GeneralAPIViewSet(BaseAPIViewSet):
 #################################################################################
 # Elemento                                                                      #
 #################################################################################
+class Trabajador(models.Model):
+    nombre = models.ForeignKey(
+        "catalogo.Trabajador",
+        verbose_name = "Seleccione uno de la lista",
+        on_delete = models.CASCADE,
+        related_name='trabajadores_sur',
+    )
+    class Meta:
+        verbose_name = "Trabajador del edificio de sur"
+        verbose_name_plural = "Trabajadores del edificio de sur"
+
+#################################################################################
+# Elemento                                                                      #
+#################################################################################        
+class Material(models.Model):
+    nombre = models.ForeignKey(
+        "catalogo.Material",
+        verbose_name = "Seleccione uno de la lista",
+        on_delete = models.CASCADE,
+        related_name='materiales_sur',
+    )
+    class Meta:
+        verbose_name = "Material del edificio de sur"
+        verbose_name_plural = "Materiales del edificio de sur"
+
+#################################################################################
+# Elemento                                                                      #
+#################################################################################
 class Reporte(ClusterableModel):
+    class Meta:
+        verbose_name = "Reporte Sur"
     nombre = models.CharField(
         verbose_name="Nombre de la actualización",
         max_length=32,
@@ -87,13 +125,14 @@ class Reporte(ClusterableModel):
     actualizador = models.CharField(
         verbose_name="Nombre de quien hace este reporte",
         max_length=64,
+        blank=False,
     )
     
     def __str__(self):
         return self.nombre
 
     class Meta:
-        verbose_name = "Reporte"
+        verbose_name = "Reporte Sur"
         verbose_name_plural = "Listado de reportes"
     
 class ReporteAPIViewSet(BaseAPIViewSet):

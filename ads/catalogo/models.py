@@ -8,6 +8,7 @@ from wagtail.api.v2.views import BaseAPIViewSet
 from wagtail.api.v2.filters import OrderingFilter, FieldsFilter
 from datetime import datetime
 from modelcluster.models import ClusterableModel
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 import inspect
@@ -59,11 +60,17 @@ class Material(ClusterableModel):
     cantidad = models.IntegerField(
         verbose_name="Cantidad",
         blank=False,
+        validators=[
+            MinValueValidator(0, message="El valor debe ser igual o mayor a 0."),
+        ],
     )
 
     precio_unitario = models.IntegerField(
         verbose_name="Precio unitario (En caso de ser en gramos ingrese por kilo)",
         blank=False,
+        validators=[
+            MinValueValidator(0, message="El valor debe ser igual o mayor a 0."),
+        ],
     )
 
     api_fields = [
@@ -149,6 +156,9 @@ class Trabajador(ClusterableModel):
     edad = models.IntegerField(
         verbose_name="Cantidad de años cumplidos",
         blank=False,
+        validators=[
+            MinValueValidator(18, message="El trabajador no puede ser menor de edad."),
+        ],
     )
     
     seguridad_social = models.CharField(
