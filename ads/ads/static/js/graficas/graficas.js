@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
     principal();
 })
 
-async function principal(){
+async function principal() {
     const gobierno = await obtenerDatos("egobierno_general");
     console.log('gobierno: ', gobierno);
-
+    
     const ia = await obtenerDatos("eia_general");
     console.log('ia: ', ia);
 
@@ -18,18 +18,16 @@ async function principal(){
 
     GraficoAvance(gobierno, norte, sur, ia);
     GraficoPresupuesto(gobierno, norte, sur, ia);
-    GraficoMateriales();
-    GraficoTrabajadores();
 }
 
 async function obtenerDatos(parametro) {
-    const url = 'http://127.0.0.1:8000/api/v2/'+parametro;
+    const url = 'http://127.0.0.1:8000/api/v2/' + parametro;
     const respuesta = await fetch(url);
     if (!respuesta.ok) {
         throw new Error(`HTTP error! status: ${respuesta.status}`);
     }
     const datos = await respuesta.json();
-    
+
     return datos['items']['0'];
 }
 
@@ -43,10 +41,10 @@ function GraficoAvance(gobierno, norte, sur, ia) {
         data.addColumn('number', 'Incompleto');
 
         data.addRows([
-            ['Gobierno', gobierno['progreso'], 100-gobierno['progreso']],
-            ['Norte', norte['progreso'], 100-norte['progreso']],
-            ['Sur', sur['progreso'], 100-sur['progreso']],
-            ['IA', ia['progreso'], 100-ia['progreso']],
+            ['Gobierno', gobierno['progreso'], 100 - gobierno['progreso']],
+            ['Norte', norte['progreso'], 100 - norte['progreso']],
+            ['Sur', sur['progreso'], 100 - sur['progreso']],
+            ['IA', ia['progreso'], 100 - ia['progreso']],
         ]);
 
         var options = {
@@ -67,14 +65,13 @@ function GraficoPresupuesto(gobierno, norte, sur, ia) {
     function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Edificio');
-        data.addColumn('number', 'Usado');
-        data.addColumn('number', 'Sin usar');
+        data.addColumn('number', 'Presupuesto');
 
         data.addRows([
-            ['Gobierno', gobierno['progreso'], 100-gobierno['progreso']],
-            ['Norte', norte['progreso'], 100-norte['progreso']],
-            ['Sur', sur['progreso'], 100-sur['progreso']],
-            ['IA', ia['progreso'], 100-ia['progreso']],
+            ['Gobierno', gobierno['presupuesto']],
+            ['Norte', norte['presupuesto']],
+            ['Sur', sur['presupuesto']],
+            ['IA', ia['presupuesto']],
         ]);
 
         var options = {
@@ -99,8 +96,8 @@ function GraficoMateriales() {
         data.addColumn('number', 'Sin usar');
         data.addColumn('number', 'Usado');
         data.addRows([
-            ['Ladrillo', 33,20],
-            ['Cable', 50,70],
+            ['Ladrillo', 33, 20],
+            ['Cable', 50, 70],
         ]);
 
         var options = {
@@ -113,11 +110,11 @@ function GraficoMateriales() {
     }
 }
 
-function GraficoTrabajadores(){
-    google.charts.load('current', {packages:["orgchart"]});
-      google.charts.setOnLoadCallback(drawChart);
+function GraficoTrabajadores() {
+    google.charts.load('current', { packages: ["orgchart"] });
+    google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
+    function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Name');
         data.addColumn('string', 'Manager');
@@ -125,19 +122,26 @@ function GraficoTrabajadores(){
 
         // For each orgchart box, provide the name, manager, and tooltip to show.
         data.addRows([
-          [{'v':'Leonardo', 'f':'Mike<div style="color:red; font-style:italic">President</div>'},
-           '', 'Super intendente'],
-           [{'v':'Donatello', 'f':'Jim<div style="color:red; font-style:italic">Indendente</div>'},
-           'Mike', 'VP'],
-           [{'v':'Miguel Angel', 'f':'Jim<div style="color:red; font-style:italic">Indendente x2</div>'},
-           'Mike', 'VP'],
-          ['Bob', 'Jim', 'Bob Sponge'],
-          ['Carol', 'Bob', '']
+            [{ 'v': 'Mike', 'f': 'Mike<div style="color:red; font-style:italic">President</div>' },
+                '', 'The President'],
+            [{ 'v': 'Jim', 'f': 'Jim<div style="color:red; font-style:italic">Vice President</div>' },
+                'Mike', 'VP'],  
+            ['Alice', 'Mike', ''],
+            ['Bob', 'Jim', 'Bob Sponge'],
+            ['Carol', 'Bob', '']
         ]);
 
         // Create the chart.
         var chart = new google.visualization.OrgChart(document.getElementById('chart_jerarquia_gobierno'));
         // Draw the chart, setting the allowHtml option to true for the tooltips.
-        chart.draw(data, {'allowHtml':true});
-      }
+        chart.draw(data, { 'allowHtml': true });
+    }
+}
+
+function gobierno(){
+    fetch("/export/").then(response => response.json())
+    .then((data) => {
+        window.open('/media/gobierno/gobierno.xlsx');
+        location.reload();
+    })
 }

@@ -13,6 +13,7 @@ from e_gobierno.models import General as EGobiernoGeneral
 from e_gobierno.models import Trabajador as EGobiernoTrabajador
 from e_gobierno.models import Material as EGobiernoMaterial
 from e_gobierno.models import Reporte as EGobiernoReporte
+from e_gobierno.models import MaterialSerializer as EGobiernoMaterialSerializer
 
 from e_norte.models import General as ENorteGeneral
 from e_norte.models import Trabajador as ENorteTrabajador
@@ -28,6 +29,9 @@ from e_ia.models import General as EIAGeneral
 from e_ia.models import Trabajador as EIATrabajador
 from e_ia.models import Material as EIAMaterial
 from e_ia.models import Reporte as EIAReporte
+
+from rest_framework import serializers
+from wagtail.api import APIField
 
 
 #################################################################################
@@ -63,7 +67,6 @@ class EGobiernoMaterialMenu(ModelAdmin):
 
 class EGobiernoReporteMenu(ModelAdmin):
     model = EGobiernoReporte
-
 
 #################################################################################
 # Menus de norte                                                                #

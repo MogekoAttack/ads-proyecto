@@ -12,6 +12,8 @@ from modelcluster.models import ClusterableModel
 
 from modelcluster.models import ClusterableModel
 
+from rest_framework import serializers
+
 #################################################################################
 # Elemento                                                                      #
 #################################################################################
@@ -97,6 +99,11 @@ class Material(models.Model):
     class Meta:
         verbose_name = "Material del edificio de gobierno"
         verbose_name_plural = "Materiales del edificio de gobierno"
+        
+class MaterialSerializer(serializers.Serializer):
+    class Meta:
+        model = Material
+        fields = ("nombre",)
 
 #################################################################################
 # Elemento                                                                      #
@@ -104,7 +111,7 @@ class Material(models.Model):
 class Reporte(ClusterableModel):
     nombre = models.CharField(
         verbose_name="Nombre de la actualización",
-        max_length=32,
+        max_length=32,  
     )
     
     fecha_actual = models.DateField(
